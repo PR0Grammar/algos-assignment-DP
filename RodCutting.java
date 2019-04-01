@@ -1,16 +1,59 @@
 /**
- * Rod cutting problem described in Chapter 15 of textbook
+ * Rod cutting problem
+ * Author: Nehal Patel
  */
+
 public class RodCutting {
+  static final int M_INF = (int) Double.NEGATIVE_INFINITY;
 
   // Do not change the parameters!
   public int rodCuttingRecur(int rodLength, int[] lengthPrices) {
-    return 0;
+    int[] memo = new int[rodLength];
+
+    for(int i = 0; i < memo.length; i++){
+      memo[i] = M_INF;
+    }
+    return rodCuttingRecur(rodLength, lengthPrices, memo);
+  }
+  
+  private int rodCuttingRecur(int rodLength, int[] lengthPrices, int[] memo){
+    if(rodLength <= 0){
+      return M_INF;
+    }
+    else if(memo[rodLength - 1] > M_INF){
+      return memo[rodLength - 1];
+    }
+
+    int maxProfit = M_INF;
+
+    for(int i = 0; i < rodLength; i++){
+      maxProfit = Math.max( maxProfit, 
+                            rodCuttingRecur(rodLength - i - 1, lengthPrices, memo) + lengthPrices[i]
+                          );
+    }
+    maxProfit = Math.max(maxProfit, lengthPrices[rodLength - 1]);
+
+    memo[rodLength - 1] = maxProfit;
+    return memo[rodLength - 1];
   }
 
   // Do not change the parameters!
   public int rodCuttingBottomUp(int rodLength, int[] lengthPrices) {
-    return 0;
+    int[] maxProfit = new int[rodLength];
+
+    for(int i = 0; i < rodLength; i++){
+      int maxP = M_INF;
+
+      for(int j = 0; j < i; j++){
+        maxP = Math.max( maxP, 
+                         maxProfit[j] + maxProfit[i - j - 1]
+                       );
+      }
+      maxP = Math.max(maxP, lengthPrices[i]);
+      maxProfit[i] = maxP;
+    }
+
+    return maxProfit[rodLength - 1];
   }
 
 
